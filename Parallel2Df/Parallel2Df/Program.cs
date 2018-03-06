@@ -16,8 +16,16 @@ namespace Parallel2Df
              * Both outer and inner are doing I/O ops. The outer from the network and the inner to a disk drive
              */
             List<string> strList = new List<string>();
-            strList.Add("FirstSource");
-            strList.Add("SecondSource");
+            strList.Add("Source1");
+            strList.Add("Source2");
+            strList.Add("Source3");
+            strList.Add("Source4");
+            strList.Add("Source5");
+            strList.Add("Source6");
+            strList.Add("Source7");
+            strList.Add("Source8");
+            strList.Add("Source9");
+            strList.Add("Source10");
 
             ParallelOptions netWorkOptions = new ParallelOptions();
             netWorkOptions.MaxDegreeOfParallelism = 1;
