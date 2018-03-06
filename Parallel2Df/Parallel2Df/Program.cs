@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -24,7 +25,9 @@ namespace Parallel2Df
             strList.Add("Source10");
 
             var pipeline = CreatePipelineComponents();
-            int i = 0;
+            
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
 
             foreach(var elem in strList)
             { 
@@ -32,7 +35,8 @@ namespace Parallel2Df
               
                 Thread.Sleep(10);//Imagine some more processing here
             }
-
+            sw.Stop();
+            Console.WriteLine($"************* Posted requests in {sw.ElapsedMilliseconds} milli *************");
             Console.ReadKey();
             pipeline.Complete();
 
