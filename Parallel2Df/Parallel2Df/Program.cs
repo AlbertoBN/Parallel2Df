@@ -11,17 +11,25 @@ namespace Parallel2Df
     {
         static void Main(string[] args)
         {
-            /*
-             * Suppose we have 2 nested Parallel.ForEach. The outer one has parallelism of 1 and the inner of 10.
-             * Both outer and inner are doing I/O ops. The outer from the network and the inner to a disk drive
-             */
+            List<string> strList = new List<string>();
+            strList.Add("Source1");
+            strList.Add("Source2");
+            strList.Add("Source3");
+            strList.Add("Source4");
+            strList.Add("Source5");
+            strList.Add("Source6");
+            strList.Add("Source7");
+            strList.Add("Source8");
+            strList.Add("Source9");
+            strList.Add("Source10");
 
             var pipeline = CreatePipelineComponents();
             int i = 0;
-            while (i!=10)//some condition
-            {
-                pipeline.Post(DownloadFromNetwork("FirstSource"));
-                i++;
+
+            foreach(var elem in strList)
+            { 
+                pipeline.Post(elem);
+              
                 Thread.Sleep(10);//Imagine some more processing here
             }
 
@@ -33,27 +41,30 @@ namespace Parallel2Df
             Console.WriteLine("Complete");
         }
 
-        private static BatchBlock<byte[]> CreatePipelineComponents()
+        private static BatchBlock<string> CreatePipelineComponents()
         {
             var taskSchedulerPair = new ConcurrentExclusiveSchedulerPair();
 
 
-            var dataPusher = new BatchBlock<byte[]>(5);
+            var dataPusher = new BatchBlock<string>(5);
 
             //This one can run along other tasks. The transform block may transform several batches of fragments
-            var fragmenter = new TransformBlock<byte[][], List<Fragment>>((buffers) => {
+            var fragmenter = new TransformBlock<string[], List<Fragment>>((sources) => {
 
                 //If we want to go wild we can set a Parallel.ForEach here and have each transform block spawn more tasks.
                 //However the more the less merrier in this case so we do not go wild
-                Console.WriteLine($"Entering fragmenter with {buffers.Length} buffers");
-
+                Console.WriteLine($"Entering fragmenter with {sources.Length} sources");
                 List<Fragment> fragments = new List<Fragment>();
-                foreach (var buffer in buffers)
+
+                foreach (var source in sources)
                 {
+                    byte[] buffer = DownloadFromNetwork(source);
+
                     fragments.AddRange(BreakToFragments(buffer));
                 }
                 Console.WriteLine("Exiting fragmenter");
                 return fragments;
+
             },
             new ExecutionDataflowBlockOptions
             {
