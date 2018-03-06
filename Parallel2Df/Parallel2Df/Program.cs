@@ -28,10 +28,10 @@ namespace Parallel2Df
             strList.Add("Source10");
 
             ParallelOptions netWorkOptions = new ParallelOptions();
-            netWorkOptions.MaxDegreeOfParallelism = 1;
+            netWorkOptions.MaxDegreeOfParallelism = Environment.ProcessorCount-1;
 
             ParallelOptions hardDriveOptions = new ParallelOptions();
-            hardDriveOptions.MaxDegreeOfParallelism = 10;
+            hardDriveOptions.MaxDegreeOfParallelism = 5;
 
             Parallel.ForEach(strList, netWorkOptions, (source) =>
             {
