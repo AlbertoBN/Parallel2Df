@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -32,7 +33,8 @@ namespace Parallel2Df
 
             ParallelOptions hardDriveOptions = new ParallelOptions();
             hardDriveOptions.MaxDegreeOfParallelism = 5;
-
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             Parallel.ForEach(strList, netWorkOptions, (source) =>
             {
                 byte[] buffer =  DownloadFromNetwork(source);
@@ -47,6 +49,9 @@ namespace Parallel2Df
                 });
 
             });
+
+            sw.Stop();
+            Console.WriteLine(sw.ElapsedMilliseconds);
         }
 
         private static void SaveFragment(Fragment fragment)
